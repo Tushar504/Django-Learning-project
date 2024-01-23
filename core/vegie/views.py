@@ -4,10 +4,21 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+
+def receipes(request):
+    receipes = Receipe.objects.all()
+    search = request.GET.get("search")
+    if search:
+        receipes = receipes.filter(Q(receipe_name__icontains=search) | Q(receipe_description__icontains=search))
+    else:
+        search = ""
+
+    return render(request, 'receipes.html', context={"receipes": receipes, "search": search})
 
 
 @login_required(login_url='/login')
-def receipes(request):
+def add_receipe(request):
     if request.method == "POST":
         data = request.POST
 
@@ -21,17 +32,17 @@ def receipes(request):
             receipe_description=receipe_description,
             receipe_image=receipe_image)
 
-        return redirect('/receipes')
+        return redirect('/')
 
-    receipes = Receipe.objects.all()
-    print(receipes[1].user)
-    search = request.GET.get("search")
-    if search:
-        receipes = receipes.filter(receipe_name__icontains=search)
-    else:
-        search = ""
+    return render(request, 'add_receipe.html') 
 
-    return render(request, 'receipes.html', context={"receipes": receipes, "search": search})
+
+@login_required(login_url='/login')
+def view_receipe(request, id):
+    receipe = Receipe.objects.get(id=id)
+
+    return render(request, "view_receipe.html", context={"receipe": receipe})
+
 
 
 @login_required(login_url='/login')
@@ -52,7 +63,7 @@ def update_receipe(request, id):
             receipe_image = receipe_image
 
         receipe.save()
-        return redirect('/receipes')
+        return redirect('/')
 
     return render(request, "update_receipes.html", context={"receipe": receipe})
 
@@ -61,7 +72,7 @@ def update_receipe(request, id):
 def delete_receipe(request, id):
     receipe = Receipe.objects.get(id=id)
     receipe.delete()
-    return redirect('/receipes')
+    return redirect('/')
 
 
 def register(request):
@@ -97,7 +108,7 @@ def register(request):
 def login_page(request):
 
     if request.user.is_authenticated:
-        return redirect("/receipes")
+        return redirect("/")
 
     if request.method == "POST":
         data = request.POST
@@ -117,7 +128,10 @@ def login_page(request):
             return redirect("/login")
         else:
             login(request, user=user)
-            return redirect("/receipes")
+            next = request.GET.get("next")
+            if next:
+                return redirect(next)
+            return redirect("/")
 
     return render(request, "login.html")
 
@@ -125,3 +139,4 @@ def login_page(request):
 def logout_page(request):
     logout(request)
     return redirect("/login")
+

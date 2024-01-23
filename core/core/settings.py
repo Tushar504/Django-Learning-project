@@ -41,7 +41,9 @@ INSTALLED_APPS = [
 
 EXTERNAL_APPS = [
     "home",
-    "vegie"
+    "vegie",
+    "rest_framework",
+    "rest_framework.authtoken",
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS
@@ -138,3 +140,12 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
+        ]
+
+}
+

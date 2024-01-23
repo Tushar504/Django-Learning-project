@@ -1,62 +1,29 @@
 {% extends "base.html" %}
 {% block start %}
-<div class="container mt-5">
-    <form class="col-6 mx-auto card p-3 shadow-lg" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <h2>Add Receipe</h2>
-        <hr>
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">Receipe name</label>
-          <input name="receipe_name" type="text" required class="form-control">
-          
+<div class="container position-relative top-0">
+  <div class="mt-5 col-12 z-1 position-fixed" style="top: 10px; left: 0;">
+    <div class="col-6 mx-auto d-flex flex-wrap justify-content-around align-items-center">
+      <form class="d-flex justify-content-around align-items-center">
+        <div class="mb-3 mt-3 mx-2">
+          <input placeholder="Search Receipe" name="search" type="text" value="{{search}}" class="form-control card shadow-lg">
         </div>
-        <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-label">Receipe description</label>
-          <textarea name="receipe_description" required class="form-control"></textarea>
-        </div>
-        <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Receipe image</label>
-            <input name="receipe_image" required type="file" class="form-control">
-          </div>
-        <button type="submit" class="btn btn-success">Add Receipe</button>
+        <button style="height: 40px; width: 90px;" class="btn btn-success shadow-lg">Search</button>
       </form>
-      <hr>
-    <div class="mt-5">
-        <div class="col-6 mx-auto">
-           <form>
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Search Receipe</label>
-                <input name="search" type="text" value="{{search}}" class="form-control card shadow-lg">
-                <button class="btn btn-success mt-1">Search</button>
-                
-              </div>
-           </form>
-        </div>
-
+      <a class="btn btn-primary shadow-lg" style="height: 40px; width: 150px;" href="/add_receipe">Add Receipe</a>
     </div>
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">S. No</th>
-            <th scope="col">Receipe Name</th>
-            <th scope="col">Receipe Description</th>
-            <th scope="col">Receipe Image</th>
-            <th scope="col">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for receipe in receipes %}
-          <tr>
-            <th scope="row">{{forloop.counter}}</th>
-            <td>{{receipe.receipe_name}}</td>
-            <td>{{receipe.receipe_description}}</td>
-            <td><img src="/media/{{receipe.receipe_image}}" style="height: 200px; width: 200px;"/></td>
-            <td><a href="/delete-receipe/{{receipe.id}}" class="btn btn-danger mb-2">Delete</a><a href="/update-receipe/{{receipe.id}}" class="btn btn-success">Update</a></td>
-            
-          </tr>
-        {% endfor %}
-        </tbody>
-      </table>
+  </div>
+  <div class="z-0 col-12 text-center position-absolute p-0 mt-5 d-flex flex-wrap justify-content-center" style="top: 150px;">
+      {% for receipe in receipes %}
+            <a href="/view_receipe/{{receipe.id}}" class="card col-12 col-md-4 m-1 p-1 shadow-lg">
+              <img src="/media/{{receipe.receipe_image}}" class="card-img-top img-fluid rounded-top" style="width: 100%; height: 75%;"  alt="...">
+              <div class="card-body">
+                  <h6 class="card-title">{{receipe.receipe_name}}</h6>
+              </div>
+              <div class="card-footer text-body-secondary">
+                Added By {{receipe.user}}
+              </div>
+            </a>
+      {% endfor %}
+  </div>
 </div>
-
 {% endblock %}

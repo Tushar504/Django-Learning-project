@@ -1,0 +1,16 @@
+{% extends "base.html"%}
+{% block start %}
+<div class="container col-12 mt-5 position-relative" style="top:90px">
+    <div class="card col-10 mx-auto">
+        <img src="/media/{{receipe.receipe_image}}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{receipe.receipe_name}}</h5>
+          <p class="card-text">{{receipe.receipe_description}}</p>
+          {% if request.user == receipe.user %}
+          <a href="/update-receipe/{{receipe.id}}" class="btn btn-primary">Update</a>
+          <a href="/delete-receipe/{{receipe.id}}" class="btn btn-danger">Delete</a>
+          {% endif %}
+        </div>
+      </div>
+</div>
+{% endblock %}
